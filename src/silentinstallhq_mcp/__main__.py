@@ -39,8 +39,10 @@ def main(argv: list[str] | None = None) -> None:
     settings = get_settings()
 
     transport = args.transport or settings.transport
-    host = args.host or settings.host
-    port = args.port or settings.port
+    if args.host is not None:
+        settings.host = args.host
+    if args.port is not None:
+        settings.port = args.port
 
     mcp = create_mcp(settings)
 
@@ -49,11 +51,11 @@ def main(argv: list[str] | None = None) -> None:
         return
 
     if transport == "sse":
-        mcp.run(transport="sse", host=host, port=port)
+        mcp.run(transport="sse")
         return
 
     if transport == "streamable-http":
-        mcp.run(transport="streamable-http", host=host, port=port)
+        mcp.run(transport="streamable-http")
         return
 
     print(f"Unsupported transport: {transport}", file=sys.stderr)

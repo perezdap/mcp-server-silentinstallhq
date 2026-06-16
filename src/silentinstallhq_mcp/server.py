@@ -28,7 +28,7 @@ def configure_logging(level: str) -> None:
 
 @asynccontextmanager
 async def app_lifespan(server: FastMCP) -> AsyncIterator[dict]:
-    settings: Settings = server.settings  # type: ignore[attr-defined]
+    settings: Settings = server.app_settings  # type: ignore[attr-defined]
     cache = CacheStore(settings.cache_db_path, settings.cache_ttl_seconds)
     structured_cache = StructuredCache(cache)
     rate_limiter = RateLimiter(settings.request_delay_seconds)
@@ -54,11 +54,14 @@ def create_mcp(settings: Settings | None = None) -> FastMCP:
             "Query Silent Install HQ for silent install guides, PSADT v4 templates, "
             "command-line switches, uninstall strings, and detection script links."
         ),
+        host=settings.host,
+        port=settings.port,
+        log_level=settings.log_level.upper(),  # type: ignore[arg-type]
         json_response=True,
         stateless_http=True,
         lifespan=app_lifespan,
     )
-    mcp.settings = settings  # type: ignore[attr-defined]
+    mcp.app_settings = settings  # type: ignore[attr-defined]
 
     from silentinstallhq_mcp.tools.guides import register_tools
 
