@@ -1,0 +1,26 @@
+services:
+  silentinstallhq-mcp:
+    build: .
+    container_name: silentinstallhq-mcp
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8010:8000"
+    environment:
+      SILENTINSTALLHQ_TRANSPORT: streamable-http
+      SILENTINSTALLHQ_HOST: 0.0.0.0
+      SILENTINSTALLHQ_PORT: 8000
+      SILENTINSTALLHQ_CACHE_DIR: /data
+      SILENTINSTALLHQ_CACHE_TTL_HOURS: 24
+      SILENTINSTALLHQ_REQUEST_DELAY_SECONDS: 1.0
+      SILENTINSTALLHQ_LOG_LEVEL: INFO
+    volumes:
+      - silentinstallhq_cache:/data
+    networks:
+      - mcp
+
+volumes:
+  silentinstallhq_cache:
+
+networks:
+  mcp:
+    external: false
