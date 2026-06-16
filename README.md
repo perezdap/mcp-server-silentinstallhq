@@ -14,18 +14,27 @@ Copy-Item .env.example .env
 uv run silentinstallhq-mcp --transport stdio
 ```
 
-**Cursor** — add to MCP settings:
+**Cursor** — add to `.cursor/mcp.json` in the cloned repo (or user MCP settings):
 
 ```json
 {
   "mcpServers": {
     "silentinstallhq": {
       "command": "uv",
-      "args": ["--directory", "/path/to/mcp-server-silentinstallhq", "run", "silentinstallhq-mcp", "--transport", "stdio"]
+      "args": [
+        "--directory",
+        "${workspaceFolder}",
+        "run",
+        "silentinstallhq-mcp",
+        "--transport",
+        "stdio"
+      ]
     }
   }
 }
 ```
+
+`${workspaceFolder}` resolves to the open project root in Cursor. For a global install, replace it with the directory where you cloned this repository.
 
 **Docker (HTTP transport for MCPJungle / reverse proxy):**
 
@@ -90,31 +99,9 @@ uv run silentinstallhq-mcp --transport streamable-http --host 127.0.0.1 --port 8
 uv run silentinstallhq-mcp --transport sse --host 127.0.0.1 --port 8000
 ```
 
-## Cursor configuration
-
-Add to `.cursor/mcp.json` (project) or user MCP settings:
-
-```json
-{
-  "mcpServers": {
-    "silentinstallhq": {
-      "command": "uv",
-      "args": [
-        "--directory",
-        "C:\\Users\\dperez\\Documents\\github\\personal\\mcp-server-silentinstallhq",
-        "run",
-        "silentinstallhq-mcp",
-        "--transport",
-        "stdio"
-      ]
-    }
-  }
-}
-```
-
 ## Claude Desktop configuration
 
-`%APPDATA%\Claude\claude_desktop_config.json`:
+Edit `%APPDATA%\Claude\claude_desktop_config.json` (Windows) or `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS). Replace `<path-to-clone>` with the directory where you cloned this repo.
 
 ```json
 {
@@ -123,7 +110,7 @@ Add to `.cursor/mcp.json` (project) or user MCP settings:
       "command": "uv",
       "args": [
         "--directory",
-        "C:\\Users\\dperez\\Documents\\github\\personal\\mcp-server-silentinstallhq",
+        "<path-to-clone>",
         "run",
         "silentinstallhq-mcp"
       ]
@@ -201,14 +188,19 @@ with MCPServerAdapter(
 
 ```python
 import asyncio
+import os
+from pathlib import Path
+
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
+
+repo_dir = Path(os.environ.get("SILENTINSTALLHQ_REPO", Path.cwd())).resolve()
 
 server_params = StdioServerParameters(
     command="uv",
     args=[
         "--directory",
-        r"C:\Users\dperez\Documents\github\personal\mcp-server-silentinstallhq",
+        str(repo_dir),
         "run",
         "silentinstallhq-mcp",
     ],
