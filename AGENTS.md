@@ -80,13 +80,13 @@ When adding new scrape targets, wire them through `HttpClient.fetch_html()` so r
 - Cache tests use `tmp_path` SQLite files.
 - Live integration tests against silentinstallhq.com are optional; unit tests must pass offline.
 
-## Related projects
+## Packaging workflow
 
-This server pairs with [winget-intune-psadt-packager](https://github.com/perezdap/winget-intune-psadt-packager) for Intune/PSADT packaging workflows. Typical flow:
+Typical agent flow for Intune/PSADT packaging:
 
 1. `extract_switches` → install/uninstall strings
 2. `generate_psadt_wrapper` → `Invoke-AppDeployToolkit.ps1`
-3. Feed results into the packager agent or catalog overrides
+3. Pass results to your packaging tool or agent
 
 ## Configuration reference
 

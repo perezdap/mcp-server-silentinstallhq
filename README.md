@@ -219,7 +219,7 @@ async def main():
 asyncio.run(main())
 ```
 
-## WingetPsadtIntunePackager integration
+## Packaging workflow integration
 
 Use this MCP server during packaging to pull authoritative silent switches and PSADT patterns before generating Intune-ready PSADT packages.
 
@@ -227,17 +227,17 @@ Typical agent workflow:
 
 1. `extract_switches("Cisco AnyConnect")` — get `silent_install_switch`, uninstall string, detection URL
 2. `generate_psadt_wrapper("Cisco AnyConnect")` — retrieve or build the PSADT v4 `Invoke-AppDeployToolkit.ps1` script
-3. Feed switches + PSADT script into WingetPsadtIntunePackager to align:
+3. Use the returned switches and script in your packaging tool or agent to align:
    - **Install command** / MSI transforms
    - **Detection script** (registry, file, or custom script from SIHQ link)
    - **Uninstall** command for supersedence / removal rules
 
-Example prompt for your packager agent:
+Example prompt for your packaging agent:
 
 ```text
 Query silentinstallhq MCP for "Microsoft FSLogix Apps".
 Use extract_switches for install/uninstall commands, then generate_psadt_wrapper for the PSADT v4 script.
-Generate a WingetPsadtIntunePackager recipe with those values.
+Use those values to build an Intune-ready package.
 ```
 
 ## Configuration
